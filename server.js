@@ -19,11 +19,10 @@ const ROOM = "group";
 io.on("connection", (socket) => {
     console.log(`User connected: ${socket.id}`);
 
-    socket.on('leaveRoom', (username, ack) => {
+    socket.on('leaveRoom', (username) => {
       socket.leave(ROOM);
       // update server user list here
-      io.emit('roomNotice', `${username} left`);
-      if (typeof ack === 'function') ack({ ok: true }); // acknowledge
+      io.emit('roomNotice', `${username} left`); // acknowledge
     });
 
     socket.on("joinRoom", async (username) => {
