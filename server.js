@@ -27,8 +27,13 @@ io.on("connection", (socket) => {
 
     socket.on("joinRoom", async (username) => {
       console.log(`${username} is joining the group`);
+      socket.data.username = username;
       await socket.join(ROOM);
-      io.to(ROOM).emit("roomNotice", `${username} joined`);
+      io.to(ROOM).emit("roomNotice", {
+        id: socket.id,
+        username,
+        action: "joined",
+      });
     });
 
     socket.on("isTyping",(data)=>{
@@ -40,6 +45,12 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
+        const username = socket.data?.username || socket.id;
+        io.to(ROOM).emit("roomNotice", {
+          id: socket.id,
+          username,
+          action: "disconnected",
+        });
         console.log(`User disconnected: ${socket.id}`);
     });
 });
