@@ -17,10 +17,17 @@ const ROOM = "group";
 io.on("connection", (socket) => {
     console.log(`User connected: ${socket.id}`);
 
+    socket.on('leaveRoom', (username, ack) => {
+      socket.leave(ROOM);
+      // update server user list here
+      io.emit('roomNotice', `${username} left`);
+      if (typeof ack === 'function') ack({ ok: true }); // acknowledge
+    });
+
     socket.on("joinRoom", async (username) => {
       console.log(`${username} is joining the group`);
       await socket.join(ROOM);
-      io.to(ROOM).emit("roomNotice", username);
+      io.to(ROOM).emit("roomNotice", `${username} joined`);
     });
 
     socket.on("isTyping",(data)=>{
