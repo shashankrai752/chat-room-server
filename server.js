@@ -10,7 +10,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://peppy-flan-533631.netlify.app",
+    origin: process.env.FRONTEND || "https://chatroom.iamshashankrai.dev" ,
     methods: ["GET", "POST"],
     credentials: true
   }
